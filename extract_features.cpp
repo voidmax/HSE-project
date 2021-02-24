@@ -468,8 +468,8 @@ int main() {
 		features_names.clear();
 		cout << "Preparing year = " << year << "..." << endl;
 		table users, trans;
-		read_csv("data/users_" + to_string(year) + ".csv", users);
-		read_csv("data/train_" + to_string(year) + ".csv", trans);
+		read_csv("edited_data/users_" + to_string(year) + ".csv", users);
+		read_csv("edited_data/train_" + to_string(year) + ".csv", trans);
 		cout << "Sorting users..." << endl;
 		sort(users.rows.begin(), users.rows.end());
 		cout << "Sorting transactions..." << endl;
