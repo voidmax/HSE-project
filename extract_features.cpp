@@ -31,7 +31,7 @@ const int N = 1e9;
 struct table {
 	vector<string> columns;
 	unordered_map<string, int> id;
-	vector<pair<string, vector<string>*>> rows;
+	vector<vector<string>> rows;
 
 	void init() {
 		for (int i = 0; i < columns.size(); ++i) {
@@ -39,7 +39,7 @@ struct table {
 		}
 	}
 
-	pair<string, vector<string>*>& operator [](int i) {
+	vector<string>& operator [](int i) {
 		return rows[i];
 	}
 
@@ -48,12 +48,7 @@ struct table {
 		if (!id.count(key)) {
 			return "";
 		}
-		int need = id[key];
-		if (need == 0) {
-			return rows[i].first;
-		} else {
-			return *(rows[i].second->begin() + (need - 1));
-		}
+		return rows[i][id[key]];
 	}
 };
 
@@ -85,17 +80,16 @@ void print(ofstream& output, vector<string> data) {
 }
 
 void read_csv(string filename, table& data) {
+	cout << "Reading " << filename << "..." << endl;
 	ifstream input;
 	input.open(filename.c_str());
 	string s;
 	input >> s;
 	data.columns = split(s);
 	while (input >> s) {
-		vector<string>* res = new vector<string>;
-		*res = split(s);
-		string key = (*res)[0];
-		res->erase(res->begin());
-		data.rows.push_back({key, res});
+		vector<string> res;
+		res = split(s);
+		data.rows.push_back(res);
 	}
 	data.init();
 	input.close();
@@ -105,9 +99,7 @@ void print_csv(string filename, table& data) {
 	ofstream output;
 	output.open(filename.c_str());
 	print(output, data.columns);
-	for (auto [key, res] : data.rows) {
-		vector<string> cur = *res;
-		cur.insert(cur.begin(), key);
+	for (auto cur : data.rows) {
 		print(output, cur);
 	}
 	output.close();
@@ -241,9 +233,9 @@ void extract_features(
 	table& users, table& trans, string filename, bool trans_target = false, bool init_names = true) {
 
 	if (init_names) {
-		cout << "\nIninitializing features for " << filename << "...\n";
+		cout << "\nIninitializing features for " << filename << "..." << endl;
 	} else {
-		cout << "\nPreparing features for " << filename << "...\n";
+		cout << "\nPreparing features for " << filename << "..." << endl;
 	}
 
 	ofstream output;
@@ -263,13 +255,11 @@ void extract_features(
 	for (int i = 0; i < users.rows.size(); ++i) {
 		bar.progress(i, users.rows.size());
 		int L = lst;
-		while (L < trans.rows.size() && 
-			trans[L].first < users[i].first) {
+		while (L < trans.rows.size() && trans[L][0] < users[i][0]) {
 			++L;
 		} 
 		int R = L;
-		while (R < trans.rows.size() && 
-			trans[R].first == users[i].first) {
+		while (R < trans.rows.size() && trans[R][0] == users[i][0]) {
 			++R;
 		}
 		lst = R;
@@ -290,7 +280,7 @@ void extract_features(
 		sort(cy.begin(), cy.end());
 
 		vector<feature> features;
-		features += create_feature("user_id", users[i].first);
+		features += create_feature("user_id", users[i][0]);
 
 
 		// target features
@@ -472,18 +462,20 @@ void extract_features(
 }
 
 int main() {
-	ios::sync_with_stdio(0), cin.tie(0), cout.tie(0);
+	ios::sync_with_stdio(0);
 	for (int year = 2014; year <= 2015; ++year) {
 		used_features.clear();
 		features_names.clear();
-		cout << "Preparing year = " << year << "...";
+		cout << "Preparing year = " << year << "..." << endl;
 		table users, trans;
 		read_csv("data/users_" + to_string(year) + ".csv", users);
 		read_csv("data/train_" + to_string(year) + ".csv", trans);
+		cout << "Sorting users..." << endl;
 		sort(users.rows.begin(), users.rows.end());
+		cout << "Sorting transactions..." << endl;
 		sort(trans.rows.begin(), trans.rows.end());
 		extract_features(users, trans, "features/features_users_" + to_string(year) + ".csv", year == 2014, true);
 		extract_features(users, trans, "features/features_users_" + to_string(year) + ".csv", year == 2014, false);
-		cout << '\n';
+		cout << endl << endl;
 	}
 }
