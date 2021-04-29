@@ -1,0 +1,118 @@
+users_2014 {
+    !INFO {
+        path=edited_data/users_2014.csv,
+        type=train,
+        category=node
+    }
+
+    USER_ID {
+        type=key
+    }
+
+    TARGET {
+        type=target
+    }
+
+    AGE_CAT, LOC_CAT {
+        type=ordered_category,
+        values="[a-c]"
+    }
+
+    INC_CAT {
+        type=ordered_category,
+        values="[d,a-c]"
+    }
+    
+    GEN {
+        type=binary,
+        values="[m,f]"
+    }
+
+    LOC_GEO_X, LOC_GEO_Y {
+        type=coordinates
+    }
+
+    CARD_MONTHLY {
+        type=binary_sequence
+    }
+
+    WEALTH_MONTHLY {
+        type=binary_sequence
+    }
+}
+
+users_2015 {
+    !INFO {
+        path=edited_data/users_2015.csv
+        type=target,
+        category=node
+    }
+
+    !COPY {
+        table=users_2014,
+        except="TARGET"
+    }
+}
+
+trans_2014 {
+    !INFO {
+        path=edited_data/train_2014.csv,
+        type=target,
+        category=edge
+    }
+
+    USER_ID {
+        type=node_key,
+        path=users_2014
+    }
+
+    POI_ID {
+        type=smth
+    }
+
+    CHANNEL {
+        type=category,
+        values="[p,n,b]"
+    }
+
+    DATE {
+        type=date
+    }
+
+    TIME_CAT, LOC_CAT, AMT_CAT {
+        type=ordered_category,
+        values="[a-c]"
+    }
+
+    MC_CAT {
+        type=category,
+        values="[a-j]"
+    }
+    
+    CARD_CAT {
+        type=category,
+        values="[c,d]"
+    }
+
+    GEO_X, GEO_Y {
+        type=coordinates
+    }
+}
+
+
+trans_2015 {
+    !INFO {
+        path=edited_data/train_2015.csv,
+        type=target,
+        category=edge
+    }
+
+    !COPY {
+        table=trans_2014
+    }
+
+    USER_ID {
+        type=node_key,
+        path=users_2015
+    }
+}
