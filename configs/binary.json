@@ -1,0 +1,36 @@
+{
+    "tables": {
+        "users_2014": {
+            "info": {
+                "path": "edited_data/users_2014.csv",
+                "type": "train",
+                "category": "node"
+            },
+            "columns": {
+                "USER_ID": {
+                    "type": "key"
+                },
+                "TARGET": {
+                    "type": "target"
+                },
+                "CARD_MONTHLY": {
+                    "copy": ["WEALTH_MONTHLY"],
+                    "type": "binary_sequence"
+                }
+            }
+        },
+        "trans_2014": {
+            "info": {
+                "path": "edited_data/train_2014.csv",
+                "type": "target",
+                "category": "edge"
+            },
+            "columns": {
+                "USER_ID": {
+                    "type": "node_key",
+                    "path": "users_2014"
+                }
+            }
+        }
+    }
+}

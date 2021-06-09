@@ -226,6 +226,15 @@ double std_norm(vector<double>& x) {
     return sqrt(sum);
 }
 
+const double BUDAPEST_X = 650947;
+const double BUDAPEST_Y = 239670;
+const double GEO_SCALE = 250000;
+
+void fix_coords(double& x, double& y) {
+    x = (x - BUDAPEST_X) / GEO_SCALE;
+    y = (y - BUDAPEST_Y) / GEO_SCALE;
+}
+
 unordered_set<string> used_features;
 vector<string> features_names;
 
@@ -266,6 +275,7 @@ void extract_features(
 
         double mx = to_double(users.get(i, "LOC_GEO_X"));
         double my = to_double(users.get(i, "LOC_GEO_Y"));
+        fix_coords(mx, my);
 
         vector<double> cx, cy;
         for (int M = L; M < R; ++M) {
@@ -275,23 +285,18 @@ void extract_features(
             if (y.empty()) continue;
             cx.push_back(to_double(x));
             cy.push_back(to_double(y));
+            fix_coords(cx.back(), cy.back());
         }
         sort(cx.begin(), cx.end());
         sort(cy.begin(), cy.end());
 
         vector<feature> features;
-        features += create_feature("user_id", users[i][0]);
+        // features += create_feature("user_id", users[i][0]);
 
 
         // target features
-        string target = users.get(i, "TARGET_TASK_2");
-        if (target.empty()) {
-            target = "0000-00-00";
-        }
         if (trans_target) {
-            features += create_feature("apply_already", target < "2014-07-01");
-            features += create_feature("apply_target", target > "2014-06-30" && target < "2015-01-01");
-            features += create_feature("apply_future", target >= "2014-07-01");
+            features += create_feature("target", users.get(i, "TARGET"));
         }
 
 
@@ -314,6 +319,8 @@ void extract_features(
         features += create_feature("loc_x", mx);
         features += create_feature("loc_y", my);
 
+
+        // sin-cos 
         vector<double> dist, angle;
         vector<double> cdist, cangle;
         vector<double> dx, dy;
@@ -458,12 +465,13 @@ void extract_features(
             output << line << '\n';
         }
     }
+    bar.finish();
     output.close();
 }
 
 int main() {
     ios::sync_with_stdio(0);
-    for (int year = 2014; year <= 2015; ++year) {
+    for (int year = 2014; year <= 2014; ++year) {
         used_features.clear();
         features_names.clear();
         cout << "Preparing year = " << year << "..." << endl;

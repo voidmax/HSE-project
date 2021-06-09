@@ -1,0 +1,60 @@
+{
+    "tables": {
+        "users_2014": {
+            "info": {
+                "path": "edited_data/users_2014.csv",
+                "type": "train",
+                "category": "node"
+            },
+            "columns": {
+                "USER_ID": {
+                    "type": "key"
+                },
+                "TARGET": {
+                    "type": "target"
+                },
+                "LOC_GEO_X": {
+                    "copy": ["LOC_GEO_Y"],
+                    "type": "coordinates"
+                }
+            }
+        },
+        "trans_2014": {
+            "info": {
+                "path": "edited_data/train_2014.csv",
+                "type": "target",
+                "category": "edge"
+            },
+            "columns": {
+                "USER_ID": {
+                    "type": "node_key",
+                    "path": "users_2014"
+                }, 
+                "POI_ID": {
+                    "type": "info",
+                    "table": "bank"
+                },           
+                "GEO_X": {
+                    "copy": ["GEO_Y"],
+                    "type": "coordinates"
+                }
+            }
+        },
+        "bank": {
+            "info": {
+                "path": "edited_data/bank.csv",
+                "type": "info",
+                "category": "info"
+            },
+            "columns": {
+                "POI_ID": {
+                    "type": "key"
+                }, 
+                "GEO_X": {
+                    "copy": ["GEO_Y"],
+                    "type": "coordinates"
+                }
+            }
+        }
+    }
+}

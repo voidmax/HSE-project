@@ -1,0 +1,97 @@
+{
+    "tables": {
+        "users_2014": {
+            "info": {
+                "path": "edited_data/users_2014.csv",
+                "type": "train",
+                "category": "node"
+            },
+            "columns": {
+                "USER_ID": {
+                    "type": "key"
+                },
+                "TARGET": {
+                    "type": "target"
+                },
+                "AGE_CAT": {
+                    "copy": ["LOC_CAT"],
+                    "type": "ordered_category",
+                    "values": "[a-c]"
+                },
+                "INC_CAT": {
+                    "type": "ordered_category",
+                    "values": "[d,a-c]"
+                },
+                "GEN": {
+                    "type": "binary",
+                    "values": "[m,f]"
+                },
+                "LOC_GEO_X": {
+                    "copy": ["LOC_GEO_Y"],
+                    "type": "coordinates"
+                },
+                "CARD_MONTHLY": {
+                    "copy": ["WEALTH_MONTHLY"],
+                    "type": "binary_sequence"
+                }
+            }
+        },
+        "trans_2014": {
+            "info": {
+                "path": "edited_data/train_2014.csv",
+                "type": "target",
+                "category": "edge"
+            },
+            "columns": {
+                "USER_ID": {
+                    "type": "node_key",
+                    "path": "users_2014"
+                }, 
+                "POI_ID": {
+                    "type": "info",
+                    "table": "bank"
+                },
+                "CHANNEL": {
+                    "type": "category",
+                    "values": "[p,n,b]"
+                },
+                "DATE": {
+                    "type": "date"
+                },
+                "TIME_CAT": {
+                    "copy": ["LOC_CAT", "AMT_CAT"],
+                    "type": "ordered_category",
+                    "values": "[a-c]"
+                },
+                "MC_CAT": {
+                    "type": "category",
+                    "values": "[a-j]"
+                },                
+                "CARD_CAT": {
+                    "type": "category",
+                    "values": "[c,d]"
+                },            
+                "GEO_X": {
+                    "copy": ["GEO_Y"],
+                    "type": "coordinates"
+                }
+            }
+        },
+        "bank": {
+            "info": {
+                "path": "edited_data/bank.csv",
+                "type": "info",
+                "category": "info"
+            },
+            "columns": {
+                "POI_ID": {
+                    "type": "key"
+                }, 
+                "GEO_X": {
+                    "copy": ["GEO_Y"],
+                    "type": "coordinates"
+                }
+            }
+        }
+    }
+}

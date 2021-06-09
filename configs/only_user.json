@@ -1,0 +1,53 @@
+{
+    "tables": {
+        "users_2014": {
+            "info": {
+                "path": "edited_data/users_2014.csv",
+                "type": "train",
+                "category": "node"
+            },
+            "columns": {
+                "USER_ID": {
+                    "type": "key"
+                },
+                "TARGET": {
+                    "type": "target"
+                },
+                "AGE_CAT": {
+                    "copy": ["LOC_CAT"],
+                    "type": "ordered_category",
+                    "values": "[a-c]"
+                },
+                "INC_CAT": {
+                    "type": "ordered_category",
+                    "values": "[d,a-c]"
+                },
+                "GEN": {
+                    "type": "binary",
+                    "values": "[m,f]"
+                },
+                "LOC_GEO_X": {
+                    "copy": ["LOC_GEO_Y"],
+                    "type": "coordinates"
+                },
+                "CARD_MONTHLY": {
+                    "copy": ["WEALTH_MONTHLY"],
+                    "type": "binary_sequence"
+                }
+            }
+        },
+        "trans_2014": {
+            "info": {
+                "path": "edited_data/train_2014.csv",
+                "type": "target",
+                "category": "edge"
+            },
+            "columns": {
+                "USER_ID": {
+                    "type": "node_key",
+                    "path": "users_2014"
+                }
+            }
+        }
+    }
+}
